@@ -12,9 +12,10 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.Timer;
 
-// Test comment for Git diff
 
-//Test 2
+//Test 2 (changed)
+
+// Test 3 (addad
 
 public class Game {
     
