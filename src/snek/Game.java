@@ -186,18 +186,18 @@ public class Game {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {        
-        Game g = new Game();
-        
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                g.display.updateDisplay(g.getGameState());
-                g.display.setVisible(true);
-                g.display.pack();
-                g.display.setLocationRelativeTo(null);
-            }
-        });
-    }
+//    public static void main(String[] args) {        
+//        Game g = new Game();
+//        
+//        EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                g.display.updateDisplay(g.getGameState());
+//                g.display.setVisible(true);
+//                g.display.pack();
+//                g.display.setLocationRelativeTo(null);
+//            }
+//        });
+//    }
     
 }

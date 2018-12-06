@@ -138,15 +138,15 @@ public class GfxGame {
         }
     }
     
-    public static void main(String[] args) {
-        GfxGame g = new GfxGame();
-        
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                g.display.setVisible(true);
-                g.animation.start();
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        GfxGame g = new GfxGame();
+//        
+//        EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                g.display.setVisible(true);
+//                g.animation.start();
+//            }
+//        });
+//    }
 }
