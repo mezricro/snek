@@ -1,12 +1,20 @@
-package snek;
+package gfxsnake;
 
+import snek.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.Arrays;
 
-public class Snake {
+public class GfxSnake extends Sprite{
     
-    private Segment[] segments;
-    private final Segment head;
+    private GfxSegment[] segments;
+    private final GfxSegment head;
+    
+    Image headSprite = getSprite("head");
 
     /**Construct a new snake with a given number of {@code Segment}s. 
      * 
@@ -16,10 +24,39 @@ public class Snake {
      * @param spawn the offset for the {@code x} and {@code y} values for
      *              each {@link Segment}
      */
-    public Snake(int segmentNumber, Point spawn) {
-        segments = new Segment[segmentNumber];
-        for (int i = 0; i < segmentNumber; i++) {
-            segments[i] = new Segment(spawn.x, spawn.y + i, Direction.N);
+    public GfxSnake(int segmentNumber, Point spawn) {
+        System.out.println(getClass().getResource("/sprites/head.png"));
+        segments = new GfxSegment[segmentNumber];
+        
+        segments[0] = new GfxSegment(spawn, Direction.N){
+            @Override
+            public void paint(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                AffineTransform old = g2.getTransform();
+                Point p = getCoordinates();
+                
+                double angle = 0;
+                switch (getDirection()) {
+                    case N: angle = -90; break;
+                    case S: angle = +90; break;
+                    case E: angle = 0; break;
+                    case W: angle = 180; break;
+                }
+                angle = Math.toRadians(angle);
+                
+                AffineTransform tx = new AffineTransform();
+                tx.translate(p.x, p.y); //Move image into place
+                tx.rotate(angle, 8, 8); //Rotate around center
+                
+                g2.setTransform(tx);
+                g2.drawImage(headSprite, 0, 0, null); //Draw image - 0,0 --> IMAGE ALREADY IN PLACE
+                g2.setTransform(old);
+            }
+        };
+        
+        
+        for (int i = 1; i < segmentNumber; i++) {
+            segments[i] = new GfxSegment(spawn.x, spawn.y, Direction.N);
         }
         head = segments[0];
     }
@@ -55,12 +92,10 @@ public class Snake {
      */
     public void moveFromBack() {
         for (int i = segments.length-1; i > 0; i--) {
-            segments[i].setCoordinates(segments[i-1].getCoordinates());
+            segments[i].setCoordinates(segments[i - 1].getCoordinates());
+            segments[i].setDirection(segments[i - 1].getDirection());
         }
-        head.setCoordinates(new Point(
-                head.getCoordinates().x + head.getDirection().getX(),
-                head.getCoordinates().y + head.getDirection().getY())
-        );
+        head.move();
     }
     
     //kettővel
@@ -68,9 +103,16 @@ public class Snake {
     public void moveFromHead() {
         //két ideiglenes változóval:
     }
+
+    @Override
+    public void paint(Graphics g) {
+        for (GfxSegment s : segments) {
+            s.paint(g);
+        }
+    }
     
     /**Add a {@code count} number of {@code Segments} to the end of the snake,
-     * with the same direction as the last segment.
+     * with the same direction and coordinates as the last segment.
      * 
      * @param count the number of segments to add
      */
@@ -79,8 +121,10 @@ public class Snake {
             int oldLen = segments.length;
             segments = Arrays.copyOf(segments, oldLen + 1);
             
-            Segment lastSegment = segments[oldLen - 1];
-            segments[oldLen] = new Segment(lastSegment.getCoordinates(), lastSegment.getDirection());
+            GfxSegment lastSegment = segments[oldLen - 1];
+            segments[oldLen] = new GfxSegment(
+                    lastSegment.getCoordinates(), lastSegment.getDirection()
+            );
         }
     }
     
@@ -109,10 +153,26 @@ public class Snake {
         return false;
     }
     
+    public boolean collides(Rectangle hitbox) {
+        Point p = head.getCoordinates();
+        return hitbox.contains(p);
+    }
+    
+    @Deprecated
+    public boolean inBounds(Rectangle bounds) {
+        Point p = head.getCoordinates();
+        return p.x < 0 || p.y < 0 ||
+               p.x > bounds.width - 1 || p.y > bounds.height - 1;
+    }
+    
+    @Deprecated
     public Direction getDirection() {
         return head.getDirection();
     }
+    
     public void changeDirection(Direction d) {
-        head.setDirection(d);
+        if (d != null) {
+            head.setDirection(d);
+        }
     }
 }

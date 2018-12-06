@@ -5,25 +5,19 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import javax.swing.Timer;
 
-
-//Test 2 (changed)
-
-// Test 3 (addad
 
 public class Game {
     
     Snake snek;
     Map map;
     Food food;
+    Animation animation;
     Display display = new Display();
-    Timer timer;
+//    Timer timer;
     Direction inputBuffer = null;
 
     public Game() {        
@@ -61,13 +55,13 @@ public class Game {
         snek.changeDirection(inputBuffer);
         inputBuffer = null;
         
-  
         if (!snek.collides(snek.getBodyCoordinates()) && 
             !snek.collides(map.getBounds())) {
             
             snek.moveFromBack();
         } else {
-            timer.stop();
+            animation.end();
+//            timer.stop();
             System.out.println("Collision!");
         }
         
@@ -107,21 +101,30 @@ public class Game {
         } else {
             if (snek.collides(food.getCoordinates())) {
                 food = new Food(map.getReachableRandomPoint(snek.getCoordinates()), pointsValue);
-                snek.addSegment(segmentValue);
+                snek.addSegments(segmentValue);
             }
         }
     }
     
     //Move animations to different thread?
     private void timerSetup(int delay) {
-        timer = new Timer(delay, new ActionListener() {
+        animation = new Animation(delay) {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void animate() {
                 updateGamestate();
                 display.updateDisplay(getGameState());
             }
-        });
-        timer.start();
+        };
+        animation.start();
+        
+//        timer = new Timer(delay, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                updateGamestate();
+//                display.updateDisplay(getGameState());
+//            }
+//        });
+//        timer.start();
     }
     
     /**Pressing an arrow key feeds input to the {@code inputBuffer}, which is used
@@ -144,17 +147,36 @@ public class Game {
                     case KeyEvent.VK_RIGHT: inputBuffer = Direction.E; break;
                     case KeyEvent.VK_UP: inputBuffer = Direction.N; break;
                     case KeyEvent.VK_DOWN: inputBuffer = Direction.S; break;
-                    case KeyEvent.VK_A: snek.addSegment(1); break;
+                    case KeyEvent.VK_A: 
+                        int toAdd = 1;
+                        System.out.println("DEBUG - " + toAdd + " segment(s) added");
+                        snek.addSegments(toAdd); 
+                        break;
                     case KeyEvent.VK_SPACE:
-                        if (timer.isRunning()) {
-                            timer.stop();
+                        if(animation.isRunning()) {
+                            animation.end();
                         } else {
-                            timer.start();
+                            animation.start();
                         }
+                        
+//                        if (timer.isRunning()) {
+//                            timer.stop();
+//                        } else {
+//                            timer.start();
+//                        }
                         break;
                     case KeyEvent.VK_R: 
                         snek = new Snake(10, map.getSpawn());
-                        timer.start();
+                        animation.start();
+//                        timer.start();
+                        break;
+                    case KeyEvent.VK_ADD:
+                        System.out.println("DEBUG - Cycle time increased");
+                        animation.setCycleTime(animation.getCycleTime() + 50);
+                        break;
+                    case KeyEvent.VK_SUBTRACT:
+                        System.out.println("DEBUG - Cycle time decreased");
+                        animation.setCycleTime(animation.getCycleTime() - 50);
                         break;
                 }
             }
@@ -164,7 +186,7 @@ public class Game {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         Game g = new Game();
         
         EventQueue.invokeLater(new Runnable() {
