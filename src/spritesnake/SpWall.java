@@ -1,5 +1,6 @@
 package spritesnake;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -11,7 +12,7 @@ public class SpWall extends SpSprite{
     private final Rectangle hitbox;
     
     public SpWall(int x, int y, int lengthInUnits, boolean horizontal) {
-        super(x, y, SpSprite.loadSprite("wall"));
+        super(x, y, SpGame.WALL_SPRITE);
         this.x = x;
         this.y = y;
         this.length = lengthInUnits;
@@ -22,7 +23,7 @@ public class SpWall extends SpSprite{
         }
     }
     public SpWall(int x, int y, double length, boolean horizontal) {
-        super(x, y, SpSprite.loadSprite("wall"));
+        super(x, y, SpGame.WALL_SPRITE);
         this.x = x;
         this.y = y;
         
@@ -40,9 +41,9 @@ public class SpWall extends SpSprite{
     public void paint(Graphics g) {
         for (int i = 0; i < length; i++) {
             if (horizontal) {
-                super.paint(g, i, 0);
+                super.paint(g, 0, i * size, 0, false);
             } else {
-                super.paint(g, 0, i);
+                super.paint(g, 0, 0, i * size, false);
             }
         }
     }

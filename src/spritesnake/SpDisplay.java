@@ -1,5 +1,6 @@
 package spritesnake;
 
+import java.awt.Graphics;
 import javax.swing.JFrame;
 
 public class SpDisplay extends JFrame{
@@ -18,7 +19,7 @@ public class SpDisplay extends JFrame{
         pack();
         setLocationRelativeTo(null);
     }
-    
+ 
     private void initFrame() {
         setTitle("Snek");
         setDefaultCloseOperation(EXIT_ON_CLOSE);

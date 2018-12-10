@@ -14,14 +14,13 @@ public class SpMap extends JPanel{
   
     private Point spawn;
     private final int roundedTo = 16;
-
+    
     public SpMap(int width, int height, Point spawn) {
         super();
         Dimension size = new Dimension(width, height);
-        walls = initWalls(width, height);
         this.setPreferredSize(size);
         this.spawn = spawn;
-        this.setBackground(new Color(15, 15, 25));
+        this.setBackground(new Color(215, 215, 225));
     }
     
     public SpMap(int width, int height) {
@@ -44,13 +43,8 @@ public class SpMap extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.paintWalls(g);
-        this.paintSprites(g);
     }
     
-    public void paintSprites(Graphics g) {
-        
-    }
-       
     private void paintWalls(Graphics g) {
 //        wallAround.paint(g);
         for (SpWall w : walls) {
@@ -62,30 +56,8 @@ public class SpMap extends JPanel{
         return walls;
     }
     
-    private SpWall[] initWalls(int maxX, int maxY) {
-        SpWall[] w;
-        
-        SpWall[] boxWall;
-        SpWall[] otherWalls;
-        
-        int spritesize = 16;
-        
-        boxWall = new SpWall[4];
-        boxWall[0] = new SpWall(0, 0, maxX / spritesize, true); // top
-        boxWall[1] = new SpWall(0, 0, maxY / spritesize, false); //left
-        boxWall[2] = new SpWall(maxX - spritesize, 0, maxY / spritesize, false); //right
-        boxWall[3] = new SpWall(0, maxY - spritesize, maxX / spritesize, true); //bottom
-        
-        otherWalls = new SpWall[4];
-        otherWalls[0] = new SpWall(maxX / 2 - spritesize, 0, 8, false);
-        otherWalls[1] = new SpWall(maxX / 2 - 2 * spritesize, 0, 8, false);
-        otherWalls[2] = new SpWall(maxX / 2 + spritesize, maxY - 8 * spritesize, 8, false);
-        otherWalls[3] = new SpWall(maxX / 2 + 2 * spritesize, maxY - 8 * spritesize, 8, false);
-        
-        w = new SpWall[boxWall.length + otherWalls.length];
-        System.arraycopy(boxWall, 0, w, 0, boxWall.length);
-        System.arraycopy(otherWalls, 0, w, boxWall.length, otherWalls.length);
-        return w;
+    public void setWalls(SpWall[] walls) {
+        this.walls = walls;
     }
     
     /**Get a random point on the map.
@@ -144,11 +116,14 @@ public class SpMap extends JPanel{
                 p = getReachableRandomPoint();
             }
         }
-        for (SpWall wall : walls) {
-            if (wall.getHitbox().contains(p)) {
-                p = getReachableRandomPoint();
+        if (walls != null) {
+            for (SpWall wall : walls) {
+                if (wall.getHitbox().contains(p)) {
+                    p = getReachableRandomPoint();
+                }
             }
         }
+        
         return p;
     }
 }

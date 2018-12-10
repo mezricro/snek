@@ -1,5 +1,6 @@
 package spritesnake;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import snek.*;
 import java.awt.Point;
@@ -16,8 +17,9 @@ public class SpSnake {
         segments[0] = head = initHead(spawn);
         
         int size = head.size;
+        System.out.println(size);
         for (int i = 1; i < segmentCount - 1; i++) {
-            segments[i] = new SpSegment(spawn.x + size, spawn.y, Direction.N);
+            segments[i] = new SpSegment(spawn.x, spawn.y, Direction.N);
         }
         
         segments[segmentCount - 1] = initTail(spawn);
@@ -26,7 +28,7 @@ public class SpSnake {
     private SpSegment initHead(Point spawn) {
         SpSegment s = new SpSegment(spawn.x, spawn.y, Direction.N) {
             @Override
-            public void paint(Graphics g) {
+            public void paint(Graphics g) {                
                 double headTurn = 0;
                 switch(getDirection()) {
                     case N: headTurn = -90; break;
@@ -37,7 +39,7 @@ public class SpSnake {
                 super.paint(g, headTurn);
             }
         };
-        s.setSprite(SpSprite.loadSprite("head"));
+        s.setSprite(SpGame.HEAD_SPRITE);
         return s;
     }
     
@@ -45,17 +47,17 @@ public class SpSnake {
         SpSegment s = new SpSegment(spawn.x + head.size, spawn.y, Direction.N) {
             @Override
             public void paint(Graphics g) {
-                double headTurn = 0;
+                double tailTurn = 0;
                 switch(getDirection()) {
-                    case N: headTurn = +90; break;
-                    case S: headTurn = -90; break;
-                    case E: headTurn = 180; break;
-                    case W: headTurn = 0; break;
+                    case N: tailTurn = +90; break;
+                    case S: tailTurn = -90; break;
+                    case E: tailTurn = 180; break;
+                    case W: tailTurn = 0; break;
                 }
-                super.paint(g, headTurn);
+                super.paint(g, tailTurn);
             }
         };
-        s.setSprite(SpSprite.loadSprite("tail"));
+        s.setSprite(SpGame.TAIL_SPRITE);
         return s;
     }
     private SpSegment initTail(SpSegment secondToLast) {
@@ -72,7 +74,7 @@ public class SpSnake {
                 super.paint(g, headTurn);
             }
         };
-        s.setSprite(SpSprite.loadSprite("tail"));
+        s.setSprite(SpGame.TAIL_SPRITE);
         return s;
     }
     

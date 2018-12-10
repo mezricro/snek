@@ -1,7 +1,7 @@
 package spritesnake;
 
 import java.awt.Graphics;
-import snek.*;
+import snek.Direction;
 import java.awt.Point;
 
 /**
@@ -13,7 +13,7 @@ public class SpSegment extends SpSprite {
     private Direction direction;
 
     public SpSegment(int x, int y, Direction direction) {
-        super(x, y, loadSprite("body"));
+        super(x, y, SpGame.BODY_SPRITE);
         this.direction = direction;
     }
     
@@ -29,14 +29,14 @@ public class SpSegment extends SpSprite {
         return direction;
     }
     
-    public void move() {
-//        System.out.println(this.getCoordinates());
-//        System.out.println(sprite.getHeight(null));
+    public void move(int increment) {
         this.setCoordinates(new Point(
-                x + direction.getX() * size,
-                y + direction.getY() * size
+                x + direction.getX() * increment,
+                y + direction.getY() * increment
         ));
-//        System.out.println(this.getCoordinates());
+    }
+    public void move() {
+        this.move(size);
     }
     
     @Override
