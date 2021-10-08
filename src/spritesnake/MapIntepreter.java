@@ -3,6 +3,7 @@ package spritesnake;
 import java.awt.Point;
 import java.util.ArrayList;
 
+// Dummy comment
 public class MapIntepreter {
     static String testMap = 
             "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW\n" +
