@@ -5,12 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JPanel;
 
 public class SpMap extends JPanel{
     
-    private SpWall[] walls;
+    private ArrayList<SpWall> walls;
   
     private Point spawn;
     private final int roundedTo = 16;
@@ -52,11 +53,11 @@ public class SpMap extends JPanel{
         }
     }
     
-    public SpWall[] getWalls() {
+    public ArrayList<SpWall> getWalls() {
         return walls;
     }
     
-    public void setWalls(SpWall[] walls) {
+    public void setWalls(ArrayList<SpWall> walls) {
         this.walls = walls;
     }
     

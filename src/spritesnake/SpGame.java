@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import snek.Animation;
 import snek.Direction;
 
@@ -26,7 +27,7 @@ public class SpGame {
     SpDisplay display;
     Direction inputBuffer = null;
     
-    public SpGame(int mapX, int mapY, SpWall[] walls) {
+    public SpGame(int mapX, int mapY, ArrayList<SpWall> walls) {
         map = new SpMap(mapX, mapY);
         map.setWalls(walls);
         overlay = new Overlay(mapX, mapY) {
@@ -132,30 +133,39 @@ public class SpGame {
         map.requestFocus();
     }
     
-    public static SpWall[] initWalls(int maxX, int maxY) {
-        SpWall[] w;
+    public static ArrayList<SpWall> initWalls(int maxX, int maxY) {
+        ArrayList<SpWall> resultWalls;
         
-        SpWall[] boxWall;
-        SpWall[] otherWalls;
+        ArrayList<SpWall> outerWalls;
+        ArrayList<SpWall> otherWalls;
         
         int spritesize = 16;
         
-        boxWall = new SpWall[4];
-        boxWall[0] = new SpWall(0, 0, maxX / spritesize, true); // top
-        boxWall[1] = new SpWall(0, 0, maxY / spritesize, false); //left
-        boxWall[2] = new SpWall(maxX - spritesize, 0, maxY / spritesize, false); //right
-        boxWall[3] = new SpWall(0, maxY - spritesize, maxX / spritesize, true); //bottom
+        outerWalls = new ArrayList<>(4);
+        outerWalls.add(0, new SpWall(0, 0, maxX / spritesize, true)); // top
+        outerWalls.add(1, new SpWall(0, 0, maxY / spritesize, false)); //left
+        outerWalls.add(2, new SpWall(maxX - spritesize, 0, maxY / spritesize, false)); //right
+        outerWalls.add(3, new SpWall(0, maxY - spritesize, maxX / spritesize, true)); //bottom
         
-        otherWalls = new SpWall[4];
-        otherWalls[0] = new SpWall(maxX / 2 - spritesize, 0, 8, false);
-        otherWalls[1] = new SpWall(maxX / 2 - 2 * spritesize, 0, 8, false);
-        otherWalls[2] = new SpWall(maxX / 2 + spritesize, maxY - 8 * spritesize, 8, false);
-        otherWalls[3] = new SpWall(maxX / 2 + 2 * spritesize, maxY - 8 * spritesize, 8, false);
+        otherWalls = new ArrayList<>(4);
+        otherWalls.add(0, new SpWall(maxX / 2 - spritesize, 0, 8, false));
+        otherWalls.add(1, new SpWall(maxX / 2 - 2 * spritesize, 0, 8, false));
+        otherWalls.add(2, new SpWall(maxX / 2 + spritesize, maxY - 8 * spritesize, 8, false));
+        otherWalls.add(3, new SpWall(maxX / 2 + 2 * spritesize, maxY - 8 * spritesize, 8, false));
         
-        w = new SpWall[boxWall.length + otherWalls.length];
-        System.arraycopy(boxWall, 0, w, 0, boxWall.length);
-        System.arraycopy(otherWalls, 0, w, boxWall.length, otherWalls.length);
-        return w;
+        resultWalls = new ArrayList<SpWall>(outerWalls.size() + otherWalls.size());
+        for (SpWall wall : outerWalls) {
+            resultWalls.add(wall);
+        }
+        
+        for (SpWall wall : otherWalls) {
+            resultWalls.add(wall);
+        }
+        
+//        System.arraycopy(outerWalls, 0, resultWalls, 0, outerWalls.size());
+//        System.arraycopy(otherWalls, 0, resultWalls, outerWalls.size(), otherWalls.size());
+        
+        return resultWalls;
     }
     
     //Create food if there's none available, respawn food if eaten
@@ -172,7 +182,7 @@ public class SpGame {
     }
     
     public static void main(String[] args) {
-        SpGame g = new SpGame();
+        SpGame g = new SpGame(640, 480, MapInterpreter.detectWalls(MapInterpreter.getMapMatrix(MapInterpreter.testMap)));
 
         
         EventQueue.invokeLater(new Runnable() {
